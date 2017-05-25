@@ -8,22 +8,21 @@ from oauth2client import client
 from oauth2client import tools
 from oauth2client.file import Storage
 
-import datetime
+from datetime import date,time,datetime,timedelta
 
-try:
-    import argparse
-    flags = argparse.ArgumentParser(parents=[tools.argparser]).parse_args()
-except ImportError:
-    flags = None
+from pytz import timezone
+
+import dateutil.parser as tp
+
 
 # If modifying these scopes, delete your previously saved credentials
 # at ~/.credentials/calendar-python-quickstart.json
-SCOPES = 'https://www.googleapis.com/auth/calendar.readonly'
+SCOPES = 'https://www.googleapis.com/auth/calendar'
 CLIENT_SECRET_FILE = 'client_secret.json'
 APPLICATION_NAME = 'Google Calendar API Python Quickstart'
 
 
-def get_credentials():
+def get_credentials():#use server auth from phone
     """Gets valid user credentials from storage.
 
     If nothing has been stored, or if the stored credentials are invalid,
@@ -69,22 +68,84 @@ def main():
         page_token = calendar_list.get('nextPageToken')
         if not page_token:
             break
+    
+    cal = raw_input('\n\nWhich Calendar do you want to use: ')
+    calitem = [value for value in calendar_list['items'] if value['summary']==cal]
 
-    print([value for value in calendar_list['items'] if value['summary']=='Work'][0]['id'])
+    if(calitem == []):
+        return
 
-    """   now = datetime.datetime.utcnow().isoformat() + 'Z' # 'Z' indicates UTC time
-    print('Getting the upcoming 10 events')
-    eventsResult = service.events().list(
-        calendarId='primary', timeMin=now, maxResults=10, singleEvents=True,
-        orderBy='startTime').execute()
-    events = eventsResult.get('items', [])
+    calid = calitem[0]['id']#get from phone
+    timez = 'US/Eastern'#get from phone
+    cdate = date.today()#get from phone
+    ctime = time(0,0)
+    tz = timezone(timez)
+    today = tz.localize(datetime.combine(cdate,ctime))#build today's datetime in local tz
+    print('Getting today\'s events')
+    events = []
 
-    if not events:
+    for calendar_list_entry in calendar_list['items']:#get all events occuring today
+        eventsResult = service.events().list(
+            calendarId=calendar_list_entry['id'], timeMin=today.isoformat(), timeMax=(today+timedelta(days=1)).isoformat(), singleEvents=True,
+            orderBy='startTime').execute()
+        for ev in eventsResult['items']:
+            events.append(ev)
+
+    '''if not events:
         print('No upcoming events found.')
     for event in events:
-        start = event['start'].get('dateTime', event['start'].get('date'))
-        print(start, event['summary'])
-    """
+        start = event['start'].get('dateTime')
+        print(start, event['summary'])'''
+    
+    buff = 30
+    duration = 60#varies by event; comes from phone
+    new_summmary = 'lunch'
+    new_start_time = time(12,30)
+    new_start_datetime = tz.localize(datetime.combine(cdate,new_start_time))
+    new_end_datetime = new_start_datetime + timedelta(minutes=duration)
+    
+    adjusted = True
+    while adjusted:
+        adjusted = False
+        for event in events:
+            start = event['start'].get('dateTime')
+            end = event['end'].get('dateTime')
+            if start != None and end != None:
+                if(new_start_datetime >= (tp.parse(start) - timedelta(minutes=buff)) and new_end_datetime <= (tp.parse(end) + timedelta(minutes=buff))) or ((new_start_datetime < (tp.parse(start) - timedelta(minutes=buff))) and (new_end_datetime > (tp.parse(end) + timedelta(minutes=buff)))):
+                    if (tp.parse(end)+timedelta(minutes=buff)) - new_start_datetime < new_start_datetime - (tp.parse(start)-timedelta(minutes=buff)-timedelta(minutes=duration)):
+                        new_start_datetime =  tp.parse(end) + timedelta(minutes=buff)
+                        new_end_datetime = new_start_datetime + timedelta(minutes=duration)
+                    else:
+                        new_end_datetime = tp.parse(start)-timedelta(minutes=buff)
+                        new_start_datetime = new_end_datetime - timedelta(minutes=duration)
+                    adjusted = True
+                elif new_start_datetime < (tp.parse(start) - timedelta(minutes=buff)) and new_end_datetime > (tp.parse(start) - timedelta(minutes=buff)) and new_end_datetime <= (tp.parse(end) + timedelta(minutes=buff)):
+                    new_end_datetime = tp.parse(start) - timedelta(minutes=buff)
+                    new_start_datetime = new_end_datetime - timedelta(minutes=duration)
+                    adjusted = True
+                elif new_start_datetime >= (tp.parse(start) - timedelta(minutes=buff)) and new_start_datetime < (tp.parse(end) + timedelta(minutes=buff)) and new_end_datetime > (tp.parse(end) + timedelta(minutes=buff)):
+                    new_start_datetime = tp.parse(end) + timedelta(minutes=buff)
+                    new_end_datetime = new_start_datetime + timedelta(minutes=duration)
+                    adjusted = True
+
+
+
+    event = {
+            'summary': new_summmary,
+            'start': {
+                'dateTime': new_start_datetime.isoformat(),
+                'timeZone': timez,
+                },
+            'end': {
+                'dateTime': new_end_datetime.isoformat(),
+                'timeZone': timez,
+                },
+            'reminders': {
+                'useDefault': True,
+                },
+            }
+    event= service.events().insert(calendarId=calid,body=event).execute()
+    print('Event created: %s' % (event.get('htmlLink')))
     
 
 if __name__ == '__main__':
