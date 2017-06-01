@@ -13,13 +13,16 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.Scopes;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.Scope;
 
 /**
  * A login screen that offers login via email/password.
  */
-public class LoginActivity extends AppCompatActivity implements  GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
+public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, View.OnClickListener
+{
 
     private static final int RC_SIGN_IN = 9001;
 
@@ -28,14 +31,16 @@ public class LoginActivity extends AppCompatActivity implements  GoogleApiClient
     private TextView mStatusTextView;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         // Set up the login form.
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.server_client_id))
+                .requestScopes(new Scope("https://www.googleapis.com/auth/calendar"))
+                .requestServerAuthCode(getString(R.string.server_client_id), false)
                 .build();
 
 
@@ -58,13 +63,16 @@ public class LoginActivity extends AppCompatActivity implements  GoogleApiClient
     }
 
     @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult)
+    {
 
     }
 
     @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
+    public void onClick(View v)
+    {
+        switch (v.getId())
+        {
             case R.id.sign_in_button:
                 signIn();
                 break;
@@ -72,38 +80,58 @@ public class LoginActivity extends AppCompatActivity implements  GoogleApiClient
         }
     }
 
-    private void signIn() {
+    private void signIn()
+    {
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
         super.onActivityResult(requestCode, resultCode, data);
 
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
-        if (requestCode == RC_SIGN_IN) {
+        if (requestCode == RC_SIGN_IN)
+        {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             handleSignInResult(result);
         }
     }
 
-    private void handleSignInResult(GoogleSignInResult result) {
-        if (result.isSuccess()) {
+    private void handleSignInResult(GoogleSignInResult result)
+    {
+        if (result.isSuccess())
+        {
             // Signed in successfully, show authenticated UI.
             GoogleSignInAccount acct = result.getSignInAccount();
-            mStatusTextView.setText(getString(R.string.signed_in_fmt, acct.getGivenName()));
-            updateUI(true);
-        } else {
+
+            //            Log.v("AUTH",acct.getServerAuthCode());
+
+            Intent intent = new Intent(this, SelectCalendarActivity.class);
+            intent.putExtra("ServerAuth", acct.getServerAuthCode());
+            intent.putExtra("Name", acct.getGivenName());
+            startActivity(intent);
+
+            //            mStatusTextView.setText(getString(R.string.signed_in_fmt, acct.getGivenName()));
+            //            updateUI(true);
+
+        }
+        else
+        {
             // Signed out, show unauthenticated UI.
             updateUI(false);
         }
     }
 
-    private void updateUI(boolean signedIn) {
-        if (signedIn) {
+    private void updateUI(boolean signedIn)
+    {
+        if (signedIn)
+        {
             findViewById(R.id.sign_in_button).setVisibility(View.GONE);
-        } else {
+        }
+        else
+        {
             mStatusTextView.setText(R.string.signed_out);
 
             findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);

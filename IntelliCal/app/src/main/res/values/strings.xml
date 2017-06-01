@@ -3,4 +3,7 @@
 
     <string name="signed_out">Please Login to Use IntelliCal</string>
     <string name="signed_in_fmt">Welcome %s!</string>
+    <string name="cal_pick_loading">Hello, %s. Working on fetching your calendars...</string>
+    <string name="cal_pick_loaded">Hello, %s. Which calendar would you like to add events to:</string>
+    <string name="cal_load_error">There was an issue loading your calendars. Try again later.</string>
 </resources>

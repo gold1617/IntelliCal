@@ -15,9 +15,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
+        android:fontFamily="sans-serif"
+        android:gravity="center"
         android:text="@string/signed_out"
-        android:textAppearance="@style/TextAppearance.AppCompat.Headline"
-        android:gravity="center" />
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Headline"/>
 
     <com.google.android.gms.common.SignInButton
         android:id="@+id/sign_in_button"
