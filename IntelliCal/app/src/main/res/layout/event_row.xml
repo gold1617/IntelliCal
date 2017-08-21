@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                             xmlns:app="http://schemas.android.com/apk/res-auto"
+                                             xmlns:tools="http://schemas.android.com/tools"
+                                             android:layout_width="match_parent"
+                                             android:layout_height="wrap_content"
+                                             android:orientation="vertical"
+                                             android:padding="10dp">
+
+    <EditText
+        android:id="@+id/EventDurationText"
+        android:layout_width="142dp"
+        android:layout_height="40dp"
+        android:ems="10"
+        android:hint="60"
+        android:inputType="number"
+        tools:layout_editor_absoluteY="58dp"
+        tools:layout_editor_absoluteX="169dp"
+        android:layout_alignBottom="@+id/textView4"
+        android:layout_centerHorizontal="true"/>
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="119dp"
+        android:layout_height="27dp"
+        android:text="Event Name: "
+        tools:layout_editor_absoluteY="36dp"
+        tools:layout_editor_absoluteX="35dp"
+        android:layout_alignBaseline="@+id/EventNameText"
+        android:layout_alignBottom="@+id/EventNameText"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"/>
+
+    <EditText
+        android:id="@+id/EventNameText"
+        android:layout_width="142dp"
+        android:layout_height="40dp"
+        android:ems="10"
+        android:hint="Breakfast"
+        android:inputType="text"
+        tools:layout_editor_absoluteY="26dp"
+        tools:layout_editor_absoluteX="158dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"/>
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="165dp"
+        android:layout_height="22dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/EventDurationText"
+        android:layout_marginTop="28dp"
+        android:text="Target Start Time:"
+        tools:layout_editor_absoluteX="25dp"
+        tools:layout_editor_absoluteY="96dp"
+        android:layout_alignRight="@+id/textView4"
+        android:layout_alignEnd="@+id/textView4"/>
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="119dp"
+        android:layout_height="27dp"
+        android:text="Duration(Minutes): "
+        tools:layout_editor_absoluteY="59dp"
+        tools:layout_editor_absoluteX="24dp"
+        android:layout_marginTop="19dp"
+        android:layout_below="@+id/EventNameText"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"/>
+
+    <EditText
+        android:id="@+id/EventStartText"
+        android:layout_width="196dp"
+        android:layout_height="41dp"
+        android:ems="10"
+        android:hint="8:00am"
+        android:inputType="time"
+        android:editable="false"
+        android:focusable="false"
+        tools:layout_editor_absoluteY="87dp"
+        tools:layout_editor_absoluteX="197dp"
+        android:layout_alignBaseline="@+id/textView2"
+        android:layout_alignBottom="@+id/textView2"
+        android:layout_alignLeft="@+id/EventDurationText"
+        android:layout_alignStart="@+id/EventDurationText"
+        android:layout_alignRight="@+id/EventDurationText"
+        android:layout_alignEnd="@+id/EventDurationText"/>
+
+    <ImageView
+        android:id="@+id/EventDelete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@android:drawable/ic_delete"
+        android:layout_marginLeft="41dp"
+        android:layout_marginStart="41dp"
+        android:layout_alignTop="@+id/EventDurationText"
+        android:layout_toRightOf="@+id/EventDurationText"
+        android:layout_toEndOf="@+id/EventDurationText"/>
+
+</RelativeLayout>

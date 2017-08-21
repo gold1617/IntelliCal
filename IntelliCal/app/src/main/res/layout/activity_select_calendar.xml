@@ -11,6 +11,7 @@
         android:layout_width="fill_parent"
         android:layout_height="71dp"
         android:textAlignment="viewStart"
+        android:layout_gravity="start"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         android:textSize="20sp"
         />

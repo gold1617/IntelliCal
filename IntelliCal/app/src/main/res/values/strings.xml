@@ -6,4 +6,11 @@
     <string name="cal_pick_loading">Hello, %s. Working on fetching your calendars...</string>
     <string name="cal_pick_loaded">Hello, %s. Which calendar would you like to add events to:</string>
     <string name="cal_load_error">There was an issue loading your calendars. Try again later.</string>
+    <string name="event_prompt">Add Events:</string>
+    <string name="event_name">Event Name</string>
+    <string name="title_activity_add_for_days">AddForDays</string>
+    <string name="num_days_prompt">How many days would you like to add events for?</string>
+    <string name="missing_field">Please fill out all fields.</string>
+    <string name="no_events">Please add at least one event</string>
+    <string name="add_events">Add</string>
 </resources>

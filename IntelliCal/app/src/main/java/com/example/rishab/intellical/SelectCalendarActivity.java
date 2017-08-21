@@ -37,7 +37,7 @@ import java.util.List;
 
 public class SelectCalendarActivity extends AppCompatActivity
 {
-    private  static ArrayList<String> calendarNames;
+    private static ArrayList<String> calendarNames;
     private static ArrayList<String> calendarIds;
     private static ArrayAdapter<String>  adapter;
     private static int load_status = 0;//0 = loading,1 = loaded, 2 = load failure
@@ -57,7 +57,6 @@ public class SelectCalendarActivity extends AppCompatActivity
         calActivity = this;
 
         Intent intent = getIntent();
-
         if(cookieStore == null || localContext == null)
         {
             cookieStore = new BasicCookieStore();
@@ -65,13 +64,14 @@ public class SelectCalendarActivity extends AppCompatActivity
             localContext.setAttribute(ClientContext.COOKIE_STORE,cookieStore);
         }
 
+        calendarListView = (ListView) findViewById(R.id.Calendars);
+
         if(intent.getStringExtra("ServerAuth") != null && !intent.getStringExtra("ServerAuth").equals(serverauth))
         {
             serverauth = intent.getStringExtra("ServerAuth");
             name = intent.getStringExtra("Name");
             calendarIds = new ArrayList<String>();
             calendarNames = new ArrayList<String>();
-            calendarListView = (ListView) findViewById(R.id.Calendars);
             adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, calendarNames);
             calendarListView.setAdapter(adapter);
 
@@ -83,7 +83,6 @@ public class SelectCalendarActivity extends AppCompatActivity
         else
         {
             Log.v("CREATE",calendarNames.toString());
-            calendarListView = (ListView) findViewById(R.id.Calendars);
             calendarListView.setAdapter(adapter);
 
             text = (TextView) findViewById(R.id.Header);
@@ -103,6 +102,10 @@ public class SelectCalendarActivity extends AppCompatActivity
         });
     }
 
+    public static HttpContext getLocalContext()
+    {
+        return localContext;
+    }
 
     public static void populateCalendars(JSONArray calendars)
     {

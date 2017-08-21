@@ -30,10 +30,21 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".LoginActivity"/>
         </activity>
-        <activity android:name=".AddEventActivity" android:parentActivityName=".SelectCalendarActivity">
+        <activity
+            android:name=".AddEventActivity"
+            android:parentActivityName=".SelectCalendarActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".SelectCalendarActivity"/>
+        </activity>
+        <activity
+            android:name=".AddForDays"
+            android:label="@string/title_activity_add_for_days"
+            android:parentActivityName=".AddEventActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.rishab.intellical.AddEventActivity"/>
         </activity>
     </application>
 
