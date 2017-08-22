@@ -1,21 +1,16 @@
 package com.example.rishab.intellical;
 
 import android.content.Intent;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.apache.http.client.CookieStore;
-import org.apache.http.protocol.HttpContext;
-
-import java.sql.Time;
 import java.util.ArrayList;
 
 public class AddEventActivity extends AppCompatActivity
@@ -92,8 +87,10 @@ public class AddEventActivity extends AppCompatActivity
                     eventString.add(event.getStart().getText().toString());
                     eventsStrings.add(eventString);
                 }
-                Intent intent = new Intent(getApplication(),AddForDays.class);
-                intent.putExtra("Events",eventsStrings);
+                Intent intent = new Intent(getApplication(),AddForDaysActivity.class);
+                intent.putExtra("Events",  eventsStrings);
+                intent.putExtra("ServerAuth", serverauth);
+                intent.putExtra("CalID", calID);
                 startActivity(intent);
             }
         });

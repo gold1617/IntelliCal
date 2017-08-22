@@ -193,12 +193,13 @@ public class SelectCalendarActivity extends AppCompatActivity
                         String serverauth = params[0];
                         List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
                         nameValuePairs.add(new BasicNameValuePair("ServerAuth", serverauth));
-                        Log.v("POST",nameValuePairs.toString());
+                        Log.d("POST",nameValuePairs.toString());
                         httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 
                         HttpResponse response = client.execute(httpPost,localContext);
                         int status = response.getStatusLine().getStatusCode();
-                        Log.v("NETWORK",String.valueOf(status));
+                        Log.d("NETWORK",response.getStatusLine().getReasonPhrase());
+                        Log.d("NETWORK",String.valueOf(status));
                         final String responseBody = EntityUtils.toString(response.getEntity());
                         calendarList = new JSONObject(responseBody);
                     }
@@ -223,6 +224,7 @@ public class SelectCalendarActivity extends AppCompatActivity
                 @Override
                 protected void onPostExecute(JSONObject calendarList)
                 {
+                    Log.d("JSON",calendarList.toString());
                     SelectCalendarActivity activity = (SelectCalendarActivity) getActivity();
                     if (calendarList == null)
                     {

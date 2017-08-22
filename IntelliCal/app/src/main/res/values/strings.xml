@@ -13,4 +13,7 @@
     <string name="missing_field">Please fill out all fields.</string>
     <string name="no_events">Please add at least one event</string>
     <string name="add_events">Add</string>
+    <string name="title_activity_adding">AddingActivity</string>
+    <string name="add_events_url" translatable="false">https://cal.rishabc.com/addEvents</string>
+    <string name="no_days">You must add events for 1+ days</string>
 </resources>

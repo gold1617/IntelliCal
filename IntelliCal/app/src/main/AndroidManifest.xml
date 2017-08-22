@@ -38,7 +38,7 @@
                 android:value=".SelectCalendarActivity"/>
         </activity>
         <activity
-            android:name=".AddForDays"
+            android:name=".AddForDaysActivity"
             android:label="@string/title_activity_add_for_days"
             android:parentActivityName=".AddEventActivity"
             android:theme="@style/AppTheme.NoActionBar">
@@ -46,6 +46,16 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.rishab.intellical.AddEventActivity"/>
         </activity>
+        <activity
+            android:name=".AddingActivity"
+            android:label="@string/title_activity_adding"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+
+        <service
+            android:name=".AddEventsService"
+            android:exported="false">
+        </service>
     </application>
 
 </manifest>
