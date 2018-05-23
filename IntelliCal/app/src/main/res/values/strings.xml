@@ -15,5 +15,6 @@
     <string name="add_events">Add</string>
     <string name="title_activity_adding">AddingActivity</string>
     <string name="add_events_url" translatable="false">https://cal.rishabc.com/addEvents</string>
+    <string name="calendar_url" translatable="false">https://cal.rishabc.com/calendars</string>
     <string name="no_days">You must add events for 1+ days</string>
 </resources>

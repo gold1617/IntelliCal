@@ -1,11 +1,12 @@
 package com.example.rishab.intellical;
 
+import android.annotation.SuppressLint;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -176,7 +177,8 @@ public class SelectCalendarActivity extends AppCompatActivity
             setRetainInstance(true);
         }
 
-        private void loadAsync(String auth,String calendar_url)
+        @SuppressLint("StaticFieldLeak")
+        private void loadAsync(String auth, String calendar_url)
         {
             new AsyncTask<String, Void, JSONObject>()
             {
@@ -215,6 +217,10 @@ public class SelectCalendarActivity extends AppCompatActivity
                     {
                         Log.e("AUTH", "Error sending to server", e);
                     }
+                    catch (Exception e)
+                    {
+                        Log.e("AUTH", "Error sending to server", e);
+                    }
                     finally
                     {
                         return calendarList;
@@ -224,7 +230,7 @@ public class SelectCalendarActivity extends AppCompatActivity
                 @Override
                 protected void onPostExecute(JSONObject calendarList)
                 {
-                    Log.d("JSON",calendarList.toString());
+//                    Log.d( "JSON",calendarList.toString());
                     SelectCalendarActivity activity = (SelectCalendarActivity) getActivity();
                     if (calendarList == null)
                     {
