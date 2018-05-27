@@ -1,6 +1,9 @@
 package com.example.rishab.intellical;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -25,6 +28,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 {
 
     private static final int RC_SIGN_IN = 9001;
+    public static final String CHANNEL_ID = "Events_Notification";
 
 
     private GoogleApiClient mGoogleApiClient;
@@ -56,6 +60,17 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         signInButton.setSize(SignInButton.SIZE_WIDE);
 
         mStatusTextView = (TextView) findViewById(R.id.banner);
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+        {
+            CharSequence channelName = getString(R.string.channel_name);
+            String channelDescription = getString(R.string.channel_description);
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID,channelName,importance);
+            channel.setDescription(channelDescription);
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
 
         findViewById(R.id.sign_in_button).setOnClickListener(this);
 

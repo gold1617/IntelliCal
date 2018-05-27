@@ -17,4 +17,6 @@
     <string name="add_events_url" translatable="false">https://cal.rishabc.com/addEvents</string>
     <string name="calendar_url" translatable="false">https://cal.rishabc.com/calendars</string>
     <string name="no_days">You must add events for 1+ days</string>
+    <string name="channel_name">Events_Added</string>
+    <string name="channel_description">Notification shown when server is done adding events.</string>
 </resources>

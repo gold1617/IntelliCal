@@ -53,7 +53,7 @@ public class AddForDaysActivity extends AppCompatActivity
             public void onClick(View v)
             {
 
-                if(days.getText().toString().equals("") || Integer.parseInt(days.getText().toString()) == 0)
+                if(days.getText().toString().equals("") || Integer.parseInt(days.getText().toString()) <= 0)
                 {
                     Toast.makeText(AddForDaysActivity.this, R.string.no_days, Toast.LENGTH_SHORT).show();
                     return;
@@ -64,7 +64,7 @@ public class AddForDaysActivity extends AppCompatActivity
                 Long todayLong = System.currentTimeMillis()/1000;
                 String today = todayLong.toString();
 
-                Intent serviceIntent = new Intent(getApplication(),AddEventsService.class);
+                Intent serviceIntent = new Intent(getBaseContext(),AddEventsService.class);
                 serviceIntent.putExtra("ServerAuth", serverauth);
                 serviceIntent.putExtra("CalID", calID);
                 serviceIntent.putExtra("Events", events);

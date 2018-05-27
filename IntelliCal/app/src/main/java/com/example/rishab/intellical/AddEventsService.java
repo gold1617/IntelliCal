@@ -2,7 +2,8 @@ package com.example.rishab.intellical;
 
 import android.app.IntentService;
 import android.content.Intent;
-import android.content.Context;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
 
 import org.apache.http.HttpResponse;
@@ -15,6 +16,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -22,11 +24,12 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.rishab.intellical.LoginActivity.CHANNEL_ID;
+
 /**
  * An {@link IntentService} subclass for handling asynchronous task requests in
  * a service on a separate handler thread.
  * <p>
- * TODO: Customize class - update intent actions, extra parameters and static
  * helper methods.
  */
 public class AddEventsService extends IntentService
@@ -48,6 +51,15 @@ public class AddEventsService extends IntentService
         ArrayList<ArrayList<String>> events = (ArrayList<ArrayList<String>>) intent.getSerializableExtra("Events");
         JSONArray eventsJSON = new JSONArray(events);
 
+
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this,CHANNEL_ID)
+                .setSmallIcon(R.drawable.googleg_color)
+                .setContentTitle("Event(s) Added")
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setAutoCancel(true);
+
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+
         HttpClient client = new DefaultHttpClient();
         HttpPost httpPost = new HttpPost(getString(R.string.add_events_url));
         try
@@ -64,8 +76,19 @@ public class AddEventsService extends IntentService
 
             HttpResponse response = client.execute(httpPost,localContext);
             int status = response.getStatusLine().getStatusCode();
-            Log.d("NETWORK",response.getStatusLine().getReasonPhrase());
+            final String responseBody = EntityUtils.toString((response.getEntity()));
+            JSONObject responseJSON = new JSONObject(responseBody);
             Log.d("NETWORK",String.valueOf(status));
+            int failed = responseJSON.getInt("failed_to_add");
+
+            if(failed == 0)
+                notificationBuilder.setContentText("All Events Added Successfully");
+            else
+                notificationBuilder.setContentText("Failed To Add " + failed + " Events");
+
+
+            notificationManager.notify(0,notificationBuilder.build());
+
         }
         catch (UnsupportedEncodingException e)
         {
@@ -74,6 +97,9 @@ public class AddEventsService extends IntentService
         catch (IOException e)
         {
             Log.e("AUTH", "Error sending to server", e);
+        } catch (JSONException e) {
+            Log.e("AUTH", "Error converting response to JSON", e);
+
         }
     }
 }
