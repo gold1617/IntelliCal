@@ -34,6 +34,8 @@ import static com.example.rishab.intellical.LoginActivity.CHANNEL_ID;
  */
 public class AddEventsService extends IntentService
 {
+    private final static int foregroundId = 1203;
+
     public AddEventsService()
     {
         super("AddEventsService");
@@ -42,6 +44,7 @@ public class AddEventsService extends IntentService
     @Override
     protected void onHandleIntent(Intent intent)
     {
+        //Get intent extras needed for adding events
         HttpContext localContext = SelectCalendarActivity.getLocalContext();
         String serverauth = intent.getStringExtra("ServerAuth");
         String calID = intent.getStringExtra("CalID");
@@ -51,14 +54,15 @@ public class AddEventsService extends IntentService
         ArrayList<ArrayList<String>> events = (ArrayList<ArrayList<String>>) intent.getSerializableExtra("Events");
         JSONArray eventsJSON = new JSONArray(events);
 
-
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this,CHANNEL_ID)
+        //Builder for ongoing notification(required for long running bg process)
+        NotificationCompat.Builder ongoingNotificationBuilder = new NotificationCompat.Builder(this,CHANNEL_ID)
                 .setSmallIcon(R.drawable.googleg_color)
-                .setContentTitle("Event(s) Added")
+                .setContentTitle(getString(R.string.add_events_service_running))
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setAutoCancel(true);
 
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+
+        startForeground(foregroundId,ongoingNotificationBuilder.build()); //Needed to continue running service if app is closed
 
         HttpClient client = new DefaultHttpClient();
         HttpPost httpPost = new HttpPost(getString(R.string.add_events_url));
@@ -76,16 +80,24 @@ public class AddEventsService extends IntentService
 
             HttpResponse response = client.execute(httpPost,localContext);
             int status = response.getStatusLine().getStatusCode();
+            Log.d("NETWORK",String.valueOf(status));
+
             final String responseBody = EntityUtils.toString((response.getEntity()));
             JSONObject responseJSON = new JSONObject(responseBody);
-            Log.d("NETWORK",String.valueOf(status));
             int failed = responseJSON.getInt("failed_to_add");
 
-            if(failed == 0)
-                notificationBuilder.setContentText("All Events Added Successfully");
-            else
-                notificationBuilder.setContentText("Failed To Add " + failed + " Events");
+            NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this,CHANNEL_ID)
+                    .setSmallIcon(R.drawable.googleg_color)
+                    .setContentTitle(getString(R.string.add_events_service_complete))
+                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                    .setAutoCancel(true);
 
+            if(failed == 0)
+                notificationBuilder.setContentText(getString(R.string.events_added));
+            else
+                notificationBuilder.setContentText(getString(R.string.events_added_failed,failed));
+
+            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
 
             notificationManager.notify(0,notificationBuilder.build());
 
@@ -97,9 +109,14 @@ public class AddEventsService extends IntentService
         catch (IOException e)
         {
             Log.e("AUTH", "Error sending to server", e);
-        } catch (JSONException e) {
+        }
+        catch (JSONException e)
+        {
             Log.e("AUTH", "Error converting response to JSON", e);
-
+        }
+        finally
+        {
+            stopSelf();
         }
     }
 }
