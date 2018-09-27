@@ -45,6 +45,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestScopes(new Scope("https://www.googleapis.com/auth/calendar"))
                 .requestServerAuthCode(getString(R.string.server_client_id), false)
+                .requestProfile()
                 .build();
 
 
@@ -124,8 +125,13 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             //            Log.v("AUTH",acct.getServerAuthCode());
 
             Intent intent = new Intent(this, SelectCalendarActivity.class);
+
+            if(acct.getGivenName() != null && !acct.getGivenName().equalsIgnoreCase("null"))
+                intent.putExtra("Name", acct.getGivenName());
+            else
+                intent.putExtra("Name", acct.getDisplayName());
+
             intent.putExtra("ServerAuth", acct.getServerAuthCode());
-            intent.putExtra("Name", acct.getGivenName());
             startActivity(intent);
 
             //            mStatusTextView.setText(getString(R.string.signed_in_fmt, acct.getGivenName()));
