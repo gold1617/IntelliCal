@@ -66,6 +66,7 @@ public class AddEventsService extends IntentService
 
         HttpClient client = new DefaultHttpClient();
         HttpPost httpPost = new HttpPost(getString(R.string.add_events_url));
+        httpPost.addHeader("X-Api-Key", getString(R.string.X_API_KEY));
         try
         {
             List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();

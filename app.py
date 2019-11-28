@@ -12,19 +12,28 @@ from pytz import timezone
 
 import dateutil.parser as tp
 
-from flask import Flask,request,jsonify,session
+from flask import Flask,request,jsonify,session,abort
 import json
 
 app = Flask(__name__)
 
 
-json_file = open('paths.json').read()
+json_file = open('/var/www/intellical/intellical/paths.json').read()
 paths = json.loads(json_file)
 redir = paths['redir']
 app.secret_key = paths['secret_key']
 SCOPES = 'https://www.googleapis.com/auth/calendar'
 CLIENT_SECRET_FILE = paths['client_secret']
 APPLICATION_NAME = 'IntelliCal'
+
+api_key_path = paths['api_key_path']
+api_key_file = open(api_key_path).read()
+api_key_json = json.loads(api_key_file)
+API_KEY = api_key_json['X-Api-Key']
+
+def check_key(api_key):
+    if api_key != API_KEY:
+        abort(403)
 
 def get_credentials(authCode):
     if(session.get("credentials",None) == None or session.get('authCode',None) != authCode):
@@ -35,6 +44,9 @@ def get_credentials(authCode):
 
 @app.route('/calendars',methods=['POST'])
 def calendars():
+    api_key = request.headers.get('X-Api-Key', '')
+    check_key(api_key)
+
     server_auth = request.form['ServerAuth']
 
     credentials = client.OAuth2Credentials.from_json(get_credentials(server_auth))
@@ -55,6 +67,10 @@ def calendars():
 
 @app.route('/addEvents',methods=['POST'])
 def add_events():
+    api_key = request.headers.get('X-Api-Key', '')
+    check_key(api_key)
+
+
     server_auth = request.form['ServerAuth']
     calid = request.form['CalID']
     td = float(request.form['Date'])
@@ -95,7 +111,7 @@ def add_events():
             if(not add_event(service,calid,cdate,existing_events,tz,timez,event[0],int(event[1]),event[2])):
                 fail_to_add += 1
 
-    return jsonify([fail_to_add])
+    return jsonify({'failed_to_add': fail_to_add})
 
 def add_event(service,calid,cdate,events,tz,timez,summary,duration,start,buff=30):
     starth,startm = start.split(":")
@@ -164,7 +180,6 @@ def test():
 def test2():
     res = session.get('test','Session not found')    
     return res
-
 
 if __name__ == "__main__":
     app.run()

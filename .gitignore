@@ -55,5 +55,5 @@ freeline/
 freeline_project_description.json
 
 #IDs
-client_secret*
+*secret*
 paths.json

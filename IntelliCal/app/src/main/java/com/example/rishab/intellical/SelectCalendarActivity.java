@@ -197,6 +197,7 @@ public class SelectCalendarActivity extends AppCompatActivity
                         nameValuePairs.add(new BasicNameValuePair("ServerAuth", serverauth));
                         Log.d("POST",nameValuePairs.toString());
                         httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+                        httpPost.addHeader("X-Api-Key", getString(R.string.X_API_KEY));
 
                         HttpResponse response = client.execute(httpPost,localContext);
                         int status = response.getStatusLine().getStatusCode();
